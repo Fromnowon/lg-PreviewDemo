@@ -1,0 +1,39 @@
+{
+	"Devices":	[{
+			"ID":	0,
+			"SerialNumber":	"iDS-2DF5284-A20140517CCCH465183457B",
+			"ChannelNumber":	1,
+			"StartChannel":	1,
+			"AlarmInNum":	7,
+			"AlarmOutNum":	2,
+			"IPChanNum":	0,
+			"MirrorChanNum":	0,
+			"StartMirrorChanNo":	0,
+			"LocalNodeName":	"11",
+			"DeviceType":	41,
+			"DiskNum":	0,
+			"LoginUserName":	"admin",
+			"LoginUserPwd":	"12345",
+			"DeviceIP":	"172.16.1.141",
+			"DeviceMultiIP":	"0.0.0.0",
+			"DevicePort":	8000,
+			"DeviceName":	"iDS-2DF5284-A",
+			"LoginMode":	0,
+			"Https":	0,
+			"Channels":	[{
+					"ChanID":	0,
+					"DeviceIndex":	0,
+					"ChanIndex":	0,
+					"ChanName":	"Camera1",
+					"Protocol":	0,
+					"PicResolution":	0,
+					"PicQuality":	0,
+					"Enable":	1,
+					"PreviewMode":	0,
+					"PreviewProtocolType":	0,
+					"VideoCodingType":	0,
+					"StreamType":	0,
+					"LinkMode":	0
+				}]
+		}]
+}
