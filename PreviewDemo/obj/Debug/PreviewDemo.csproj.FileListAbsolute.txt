@@ -22,7 +22,6 @@ C:\Users\ZZH\Desktop\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo�
 C:\Users\ZZH\Desktop\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo示例\3- C# 开发示例\1-实时预览示例代码一\PreviewDemo\obj\Debug\PreviewDemo.application
 C:\Users\ZZH\Desktop\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo示例\3- C# 开发示例\1-实时预览示例代码一\PreviewDemo\obj\Debug\PreviewDemo.exe
 C:\Users\ZZH\Desktop\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo示例\3- C# 开发示例\1-实时预览示例代码一\PreviewDemo\obj\Debug\PreviewDemo.pdb
-E:\其他\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo示例\3- C# 开发示例\1-实时预览示例代码一\PreviewDemo\obj\Debug\PreviewDemo.csprojAssemblyReference.cache
 E:\其他\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo示例\3- C# 开发示例\1-实时预览示例代码一\PreviewDemo\obj\Debug\PreviewDemo.Preview.resources
 E:\其他\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo示例\3- C# 开发示例\1-实时预览示例代码一\PreviewDemo\obj\Debug\PreviewDemo.csproj.GenerateResource.cache
 E:\其他\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo示例\3- C# 开发示例\1-实时预览示例代码一\PreviewDemo\obj\Debug\PreviewDemo.exe
@@ -39,3 +38,7 @@ E:\其他\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo示例\3- C#
 E:\其他\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo示例\3- C# 开发示例\1-实时预览示例代码一\PreviewDemo\obj\Debug\PreviewDemo.csproj.CopyComplete
 E:\其他\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo示例\3- C# 开发示例\1-实时预览示例代码一\PreviewDemo\obj\Debug\PreviewDemo.plugin.Dialog.resources
 E:\其他\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo示例\3- C# 开发示例\1-实时预览示例代码一\PreviewDemo\obj\Debug\PreviewDemo.Properties.Resources.resources
+E:\其他\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo示例\3- C# 开发示例\1-实时预览示例代码一\PreviewDemo\bin\IrisSkin4.dll
+E:\其他\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo示例\3- C# 开发示例\1-实时预览示例代码一\PreviewDemo\obj\Debug\PreviewDemo.csprojAssemblyReference.cache
+E:\其他\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo示例\3- C# 开发示例\1-实时预览示例代码一\PreviewDemo\obj\Debug\PreviewDemo.plugin.Notice.resources
+E:\其他\教学相关\CH-HCNetSDKV5.3.6.30_build20180816_Win32\Demo示例\3- C# 开发示例\1-实时预览示例代码一\PreviewDemo\obj\Debug\PreviewDemo.plugin.Record.resources

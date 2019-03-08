@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using PreviewDemo.plugin;
 
 namespace PreviewDemo
 {
@@ -29,7 +30,10 @@ namespace PreviewDemo
         private string UserDir="./用户/";//用户资料文件夹
         private JObject config = null;//配置
         private bool is_FullScreen = false;
+        private bool m_bRecord = false;
         private Dictionary<string, int> winSize = new Dictionary<string, int>();
+        System.Timers.Timer t = new System.Timers.Timer(1000);   //实例化Timer类，设置间隔时间为10000毫秒；   
+        
 
 
         CHCNetSDK.REALDATACALLBACK RealData = null;
@@ -53,6 +57,7 @@ namespace PreviewDemo
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripMenuItem userFolder;
         private ToolStripMenuItem about;
+        private Label label1;
         private IContainer components;
 
         //private GroupBox groupBox1;
@@ -63,6 +68,11 @@ namespace PreviewDemo
             // Windows 窗体设计器支持所必需的
             //
             InitializeComponent();
+
+            //初始化定时器
+            t.Elapsed += new System.Timers.ElapsedEventHandler(theout); //到达时间的时候执行事件；   
+            t.AutoReset = true;   //设置是执行一次（false）还是一直执行(true)；   
+            t.SynchronizingObject = this;
 
             //双击全屏事件
             this.RealPlayWnd.DoubleClick += new System.EventHandler(this.RealPlayWnd_Click);
@@ -78,6 +88,18 @@ namespace PreviewDemo
             //解析配置
             JObject json = (JObject)JsonConvert.DeserializeObject(config);
             this.config = json;
+            //读取本地配置
+            int is_first_startup= int.Parse(Util.LoadConfig()["first_startup"].ToString());
+            if (is_first_startup==1)
+            {
+                //第一次启动
+                MessageBox.Show("在播放区域点击右键，打开功能菜单；如发现问题请联系技术组","提示");
+                //修改配置
+                JToken t = Util.LoadConfig();
+                t["first_startup"] = 0;
+                string content = t.ToString();
+                System.IO.File.WriteAllText("localConfig.ini", content, Encoding.UTF8);
+            }
 
             //Console.WriteLine((JObject)JsonConvert.DeserializeObject(json.ToString()));
             /*
@@ -152,7 +174,9 @@ namespace PreviewDemo
                 case "2":
                     //只显示高二
                     grade_root1.Remove();
+                    grade_root2.Remove();
                     grade_root3.Remove();
+                    MessageBox.Show("高二设备暂未支持","错误");
                     break;
                 case "3":
                     //只显示高三
@@ -214,7 +238,7 @@ namespace PreviewDemo
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.RealPlayWnd = new System.Windows.Forms.PictureBox();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Preview));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuRecord = new System.Windows.Forms.ToolStripMenuItem();
             this.menuCapture = new System.Windows.Forms.ToolStripMenuItem();
@@ -223,23 +247,15 @@ namespace PreviewDemo
             this.menuReset = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.menuFullScreen = new System.Windows.Forms.ToolStripMenuItem();
-            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.userFolder = new System.Windows.Forms.ToolStripMenuItem();
             this.about = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            ((System.ComponentModel.ISupportInitialize)(this.RealPlayWnd)).BeginInit();
+            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.RealPlayWnd = new System.Windows.Forms.PictureBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.contextMenuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RealPlayWnd)).BeginInit();
             this.SuspendLayout();
-            // 
-            // RealPlayWnd
-            // 
-            this.RealPlayWnd.BackColor = System.Drawing.SystemColors.WindowText;
-            this.RealPlayWnd.ContextMenuStrip = this.contextMenuStrip1;
-            this.RealPlayWnd.Location = new System.Drawing.Point(263, 12);
-            this.RealPlayWnd.Name = "RealPlayWnd";
-            this.RealPlayWnd.Size = new System.Drawing.Size(920, 652);
-            this.RealPlayWnd.TabIndex = 4;
-            this.RealPlayWnd.TabStop = false;
             // 
             // contextMenuStrip1
             // 
@@ -256,13 +272,13 @@ namespace PreviewDemo
             this.userFolder,
             this.about});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(211, 218);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(154, 190);
             // 
             // menuRecord
             // 
             this.menuRecord.Enabled = false;
             this.menuRecord.Name = "menuRecord";
-            this.menuRecord.Size = new System.Drawing.Size(210, 24);
+            this.menuRecord.Size = new System.Drawing.Size(153, 24);
             this.menuRecord.Text = "录像";
             this.menuRecord.Click += new System.EventHandler(this.menuRecord_Click);
             // 
@@ -270,20 +286,20 @@ namespace PreviewDemo
             // 
             this.menuCapture.Enabled = false;
             this.menuCapture.Name = "menuCapture";
-            this.menuCapture.Size = new System.Drawing.Size(210, 24);
+            this.menuCapture.Size = new System.Drawing.Size(153, 24);
             this.menuCapture.Text = "截图";
             this.menuCapture.Click += new System.EventHandler(this.menuCapture_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(207, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(150, 6);
             // 
             // menuSound
             // 
             this.menuSound.Enabled = false;
             this.menuSound.Name = "menuSound";
-            this.menuSound.Size = new System.Drawing.Size(210, 24);
+            this.menuSound.Size = new System.Drawing.Size(153, 24);
             this.menuSound.Text = "关闭声音";
             this.menuSound.Click += new System.EventHandler(this.menuSound_Click);
             // 
@@ -291,22 +307,42 @@ namespace PreviewDemo
             // 
             this.menuReset.Enabled = false;
             this.menuReset.Name = "menuReset";
-            this.menuReset.Size = new System.Drawing.Size(210, 24);
+            this.menuReset.Size = new System.Drawing.Size(153, 24);
             this.menuReset.Text = "重置镜头";
+            this.menuReset.Visible = false;
             this.menuReset.Click += new System.EventHandler(this.menuReset_Click);
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(207, 6);
+            this.toolStripSeparator3.Size = new System.Drawing.Size(150, 6);
             // 
             // menuFullScreen
             // 
             this.menuFullScreen.Enabled = false;
             this.menuFullScreen.Name = "menuFullScreen";
-            this.menuFullScreen.Size = new System.Drawing.Size(210, 24);
+            this.menuFullScreen.Size = new System.Drawing.Size(153, 24);
             this.menuFullScreen.Text = "全屏";
             this.menuFullScreen.Click += new System.EventHandler(this.menuFullScreen_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(150, 6);
+            // 
+            // userFolder
+            // 
+            this.userFolder.Name = "userFolder";
+            this.userFolder.Size = new System.Drawing.Size(153, 24);
+            this.userFolder.Text = "用户文件夹";
+            this.userFolder.Click += new System.EventHandler(this.userFolder_Click);
+            // 
+            // about
+            // 
+            this.about.Name = "about";
+            this.about.Size = new System.Drawing.Size(153, 24);
+            this.about.Text = "关于";
+            this.about.Click += new System.EventHandler(this.about_Click);
             // 
             // treeView1
             // 
@@ -317,41 +353,48 @@ namespace PreviewDemo
             this.treeView1.TabIndex = 33;
             this.treeView1.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TreeView1_NodeMouseDoubleClick);
             // 
-            // userFolder
+            // RealPlayWnd
             // 
-            this.userFolder.Name = "userFolder";
-            this.userFolder.Size = new System.Drawing.Size(210, 24);
-            this.userFolder.Text = "用户文件夹";
-            this.userFolder.Click += new System.EventHandler(this.userFolder_Click);
+            this.RealPlayWnd.BackColor = System.Drawing.SystemColors.WindowText;
+            this.RealPlayWnd.ContextMenuStrip = this.contextMenuStrip1;
+            this.RealPlayWnd.Location = new System.Drawing.Point(263, 12);
+            this.RealPlayWnd.Name = "RealPlayWnd";
+            this.RealPlayWnd.Size = new System.Drawing.Size(920, 652);
+            this.RealPlayWnd.TabIndex = 4;
+            this.RealPlayWnd.TabStop = false;
             // 
-            // about
+            // label1
             // 
-            this.about.Name = "about";
-            this.about.Size = new System.Drawing.Size(210, 24);
-            this.about.Text = "关于";
-            this.about.Click += new System.EventHandler(this.about_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(207, 6);
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.label1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label1.ForeColor = System.Drawing.Color.Red;
+            this.label1.Location = new System.Drawing.Point(1070, 29);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(92, 27);
+            this.label1.TabIndex = 34;
+            this.label1.Text = "正在录像";
+            this.label1.Visible = false;
             // 
             // Preview
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(9, 23);
             this.ClientSize = new System.Drawing.Size(1195, 676);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.RealPlayWnd);
             this.Font = new System.Drawing.Font("微软雅黑", 10.28571F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Preview";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "录播预览";
+            this.Text = "来宾高级中学录播系统 ";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            ((System.ComponentModel.ISupportInitialize)(this.RealPlayWnd)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.RealPlayWnd)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
         #endregion
@@ -379,7 +422,6 @@ namespace PreviewDemo
                 fs.Close();
             }
         }
-
 
         public void VoiceDataCallBack(int lVoiceComHandle, IntPtr pRecvDataBuffer, uint dwBufSize, byte byAudioFlag, System.IntPtr pUser)
         {
@@ -416,7 +458,26 @@ namespace PreviewDemo
             {
                 //鼠标等待
                 this.Cursor = Cursors.WaitCursor;
-                Play(selected);
+                if (selected.Parent.Text == "高二")
+                {
+                    //鼠标恢复
+                    this.Cursor = Cursors.Arrow;
+                    MessageBox.Show("不支持高二设备","错误");
+                }
+                else
+                {
+                    if (m_bRecord)
+                    {
+                        //鼠标恢复
+                        this.Cursor = Cursors.Arrow;
+                        MessageBox.Show("当前正在录像，请先停止","提示");
+                    }
+                    else
+                    {
+                        Play(selected);
+                    }
+                    
+                }
                 //Console.WriteLine(selected.Tag);
             }
         }
@@ -437,7 +498,7 @@ namespace PreviewDemo
                 //鼠标恢复
                 this.Cursor = Cursors.Arrow;
                 iLastErr = CHCNetSDK.NET_DVR_GetLastError();
-                str = "无法连接到此班级, error code= " + iLastErr; //登录失败，输出错误号
+                str = "错误码 = " + iLastErr+",无法连接到ip："+ DVRIPAddress; //登录失败，输出错误号
                 MessageBox.Show(str);
                 return;
             }
@@ -671,7 +732,59 @@ namespace PreviewDemo
 
         private void menuRecord_Click(object sender, EventArgs e)
         {
+            //录像保存路径和文件名 the path and file name to save
+            string sVideoFileName;
+            sVideoFileName = UserDir+"录像"+ DateTime.Now.ToUniversalTime().ToString().Replace("/", "-").Replace(":", "-") + ".mp4";
 
+            if (m_bRecord == false)
+            {
+                //强制I帧 Make one key frame
+                int lChannel = 1; //通道号 Channel number
+                CHCNetSDK.NET_DVR_MakeKeyFrame(m_lUserID, lChannel);
+
+                //开始录像 Start recording
+                if (!CHCNetSDK.NET_DVR_SaveRealData(m_lRealHandle, sVideoFileName))
+                {
+                    iLastErr = CHCNetSDK.NET_DVR_GetLastError();
+                    str = "NET_DVR_SaveRealData failed, error code= " + iLastErr;
+                    return;
+                }
+                else
+                {
+                    menuRecord.Text = "停止录像";
+                    m_bRecord = true;
+                    label1.Visible = true;
+                    t.Enabled = true;
+
+                }
+            }
+            else
+            {
+                //停止录像 Stop recording
+                if (!CHCNetSDK.NET_DVR_StopSaveRealData(m_lRealHandle))
+                {
+                    iLastErr = CHCNetSDK.NET_DVR_GetLastError();
+                    str = "NET_DVR_StopSaveRealData failed, error code= " + iLastErr;
+                    return;
+                }
+                else
+                {
+                    str = "NET_DVR_StopSaveRealData succ and the saved file is " + sVideoFileName;
+                    menuRecord.Text = "录像";
+                    label1.Visible = false;
+                    m_bRecord = false;
+                    Record record = new Record();
+                    record.Show();
+                    t.Enabled =false;
+                    label1.Visible = false;
+                }
+            }
+            return;
+        }
+
+        public void theout(object source, System.Timers.ElapsedEventArgs e)
+        {
+            label1.Visible = !label1.Visible;
         }
 
         private void userFolder_Click(object sender, EventArgs e)
@@ -681,7 +794,8 @@ namespace PreviewDemo
 
         private void about_Click(object sender, EventArgs e)
         {
-
+            Dialog about = new Dialog();
+            about.ShowDialog();
         }
     }
 }

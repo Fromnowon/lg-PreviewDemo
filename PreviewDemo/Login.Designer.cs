@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Login));
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.passWord = new System.Windows.Forms.TextBox();
@@ -36,6 +37,8 @@
             this.loginBtn = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.update_tip = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // label3
@@ -66,7 +69,6 @@
             this.passWord.PasswordChar = '*';
             this.passWord.Size = new System.Drawing.Size(322, 38);
             this.passWord.TabIndex = 11;
-            this.passWord.Text = "lbgz2012";
             // 
             // userName
             // 
@@ -75,13 +77,12 @@
             this.userName.Name = "userName";
             this.userName.Size = new System.Drawing.Size(322, 38);
             this.userName.TabIndex = 10;
-            this.userName.Text = "admin";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("微软雅黑", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(190, 62);
+            this.label1.Location = new System.Drawing.Point(237, 48);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(423, 52);
             this.label1.TabIndex = 9;
@@ -114,15 +115,25 @@
             // 
             this.update_tip.AutoSize = true;
             this.update_tip.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.update_tip.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.update_tip.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.update_tip.ForeColor = System.Drawing.Color.Red;
-            this.update_tip.Location = new System.Drawing.Point(12, 9);
+            this.update_tip.Location = new System.Drawing.Point(606, 408);
             this.update_tip.Name = "update_tip";
-            this.update_tip.Size = new System.Drawing.Size(219, 20);
+            this.update_tip.Size = new System.Drawing.Size(167, 15);
             this.update_tip.TabIndex = 15;
             this.update_tip.Text = "发现新版本！点击下载";
             this.update_tip.Visible = false;
             this.update_tip.Click += new System.EventHandler(this.label5_Click);
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = global::PreviewDemo.Properties.Resources.logo;
+            this.pictureBox1.Location = new System.Drawing.Point(151, 38);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(80, 80);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 16;
+            this.pictureBox1.TabStop = false;
             // 
             // Login
             // 
@@ -130,6 +141,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.update_tip);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -138,10 +150,12 @@
             this.Controls.Add(this.userName);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.loginBtn);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "Login";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Login";
+            this.Text = "登录";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -157,5 +171,6 @@
         private System.Windows.Forms.Button loginBtn;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label update_tip;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }

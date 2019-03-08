@@ -39,20 +39,20 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(37, 52);
+            this.label1.Location = new System.Drawing.Point(37, 57);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(232, 15);
+            this.label1.Size = new System.Drawing.Size(248, 15);
             this.label1.TabIndex = 0;
-            this.label1.Text = "本程序由来宾高级中学技术组制作";
+            this.label1.Text = "本程序由[来宾高级中学技术组]制作";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(37, 80);
+            this.label2.Location = new System.Drawing.Point(37, 87);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(233, 15);
+            this.label2.Size = new System.Drawing.Size(235, 15);
             this.label2.TabIndex = 1;
-            this.label2.Text = "使用了[海康威视]提供的源码与库";
+            this.label2.Text = "使用了[海康威视]提供的Demo与库";
             // 
             // label3
             // 
@@ -111,7 +111,6 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Version 1.0";
-            this.TopMost = true;
             this.ResumeLayout(false);
             this.PerformLayout();
 
