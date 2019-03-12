@@ -25,10 +25,12 @@ namespace PreviewDemo
         public Login()
         {
             InitializeComponent();
+
             //初始化相关配置
             //skinEngine1.SkinFile = "./Debug/Skins/MacOS.ssk";
             server = Util.LoadConfig()["server"].ToString();
-            //读取账号密码
+            passWord.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.loginPress);
+
             JToken t= Util.LoadConfig();
             userName.Text = t["username"].ToString();
             passWord.Text = t["password"].ToString();
@@ -47,6 +49,7 @@ namespace PreviewDemo
                 myStreamReader.Close();
                 myResponseStream.Close();
                 JObject json = (JObject)JsonConvert.DeserializeObject(retString);
+                Console.WriteLine(json);
                 if (json["code"].ToString() == "1")
                 {
                     //有升级
@@ -86,8 +89,25 @@ namespace PreviewDemo
 
         }
 
+        private void loginPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                this.loginFun();
+            }
+        }
+
         private void loginBtn_Click(object sender, EventArgs e)
         {
+            this.loginFun();
+        }
+
+        private void loginFun()
+        {
+            //禁用按钮
+            loginBtn.Text = "登录中...";
+            loginBtn.Enabled = false;
+
 
             string username = userName.Text;
             string password = passWord.Text;
@@ -95,20 +115,27 @@ namespace PreviewDemo
             if (username == "" || password == "")
             {
                 MessageBox.Show("账号或密码不能为空", "错误");
+                //启用按钮
+                loginBtn.Enabled = true;
+                loginBtn.Text = "登录";
                 return;
             }
             //保存账号密码
             JToken t = Util.LoadConfig();
             t["username"] = username;
             t["password"] = password;
-            System.IO.File.WriteAllText("localConfig.ini", t.ToString(), Encoding.UTF8);
+            System.IO.File.WriteAllText(System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "\\localConfig.ini", t.ToString(), Encoding.UTF8);
             //提交验证
             string res = Util.LoginFunction(server, username, Util.MD5Encrypt32(password));
+            Console.WriteLine(res);
             JObject json = (JObject)JsonConvert.DeserializeObject(res);
 
             if (json["code"].ToString() == "-1")
             {
                 MessageBox.Show("账号密码错误", "错误");
+                //启用按钮
+                loginBtn.Enabled = true;
+                loginBtn.Text = "登录";
             }
             else
             {
@@ -128,7 +155,7 @@ namespace PreviewDemo
 
         private void label4_Click(object sender, EventArgs e)
         {
-            Notice notice = new Notice("账户为管理员统一管理\n账号：中文姓名，密码：手机号\n如仍无法登录请联系技术组");
+            Notice notice = new Notice("账户为管理员统一管理\n账号：中文姓名，密码：身份证后六位\n如仍无法登录请联系技术组");
             notice.ShowDialog();
 
         }

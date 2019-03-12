@@ -47,7 +47,7 @@ namespace PreviewDemo
             for (int i = 0; i < s.Length; i++)
             {
                 // 将得到的字符串使用十六进制类型格式。格式后的字符是小写的字母，如果使用大写（X）则格式后的字符是大写字符 
-                pwd = pwd + s[i].ToString("X");
+                pwd = pwd + s[i].ToString("X2");
             }
             return pwd;
         }
@@ -69,39 +69,10 @@ namespace PreviewDemo
             return retString;
         }
 
-        //检测升级
-        public static int CheckUpdate(string server)
-        {
-            string serviceAddress = server + "?action=checkVersion";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serviceAddress);
-            request.Method = "GET";
-            request.ContentType = "text/html;charset=UTF-8";
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream myResponseStream = response.GetResponseStream();
-            StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.UTF8);
-            string retString = myStreamReader.ReadToEnd();
-            myStreamReader.Close();
-            myResponseStream.Close();
-            Console.WriteLine(retString);
-            if (retString == "0")
-            {
-                //有升级
-                return 1;
-
-                //Dialog dialog = new Dialog("发现新版本");
-                //dialog.ShowDialog();
-                //MessageBox.Show("发现新版本","提示");
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
         //读取本地配置
         public static JObject LoadConfig()
         {
-            string fileName = "./localConfig.ini";
+            string fileName = System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "\\localConfig.ini";
             //读取文件内容
             StreamReader sr = new StreamReader(fileName, System.Text.Encoding.Default);
             String ls_input = sr.ReadToEnd().TrimStart();

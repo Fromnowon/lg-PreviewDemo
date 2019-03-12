@@ -27,13 +27,15 @@ namespace PreviewDemo
         private Int32 m_lRealHandle = -1;
         private int lVoiceComHandle = -1;
         private string str;
-        private string UserDir="./用户/";//用户资料文件夹
+        private string UserDir = "./用户/";//用户资料文件夹
         private JObject config = null;//配置
         private bool is_FullScreen = false;
         private bool m_bRecord = false;
         private Dictionary<string, int> winSize = new Dictionary<string, int>();
         System.Timers.Timer t = new System.Timers.Timer(1000);   //实例化Timer类，设置间隔时间为10000毫秒；   
-        
+        CHCNetSDK.VOICEDATACALLBACKV30 VoiceData;
+
+
 
 
         CHCNetSDK.REALDATACALLBACK RealData = null;
@@ -89,16 +91,16 @@ namespace PreviewDemo
             JObject json = (JObject)JsonConvert.DeserializeObject(config);
             this.config = json;
             //读取本地配置
-            int is_first_startup= int.Parse(Util.LoadConfig()["first_startup"].ToString());
-            if (is_first_startup==1)
+            int is_first_startup = int.Parse(Util.LoadConfig()["first_startup"].ToString());
+            if (is_first_startup == 1)
             {
                 //第一次启动
-                MessageBox.Show("在播放区域点击右键，打开功能菜单；如发现问题请联系技术组","提示");
+                MessageBox.Show("在播放区域点击右键，打开功能菜单；如发现问题请联系技术组", "提示");
                 //修改配置
                 JToken t = Util.LoadConfig();
                 t["first_startup"] = 0;
                 string content = t.ToString();
-                System.IO.File.WriteAllText("localConfig.ini", content, Encoding.UTF8);
+                System.IO.File.WriteAllText(System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase + "\\localConfig.ini", content, Encoding.UTF8);
             }
 
             //Console.WriteLine((JObject)JsonConvert.DeserializeObject(json.ToString()));
@@ -106,7 +108,7 @@ namespace PreviewDemo
              * 远程配置内容示例
              {
               "code": 1,//状态码
-              "grade": "0",//登录账户年级
+              "grade": "[1,1,1]",//登录账户年级
               "configuration": {
                 "id": "1",//索引，无实际意义
                 "grade_1": "{\"ip\":\"172.16.0.\",\"first\":201,\"num\":25}",//高一，ip前三段，第一个班级第四段，班级数
@@ -164,26 +166,18 @@ namespace PreviewDemo
             //杂项设置
             //this.treeView1.ExpandAll();
             //隐藏年级
-            switch (json["grade"].ToString())
+            char[] g = json["grade"].ToString().ToCharArray();
+            if (g[0] == '0')
             {
-                case "1":
-                    //只显示高一
-                    grade_root2.Remove();
-                    grade_root3.Remove();
-                    break;
-                case "2":
-                    //只显示高二
-                    grade_root1.Remove();
-                    grade_root2.Remove();
-                    grade_root3.Remove();
-                    MessageBox.Show("高二设备暂未支持","错误");
-                    break;
-                case "3":
-                    //只显示高三
-                    grade_root1.Remove();
-                    grade_root2.Remove();
-                    break;
-
+                grade_root1.Remove();
+            }
+            if (g[1] == '0')
+            {
+                grade_root2.Remove();
+            }
+            if (g[2] == '0')
+            {
+                grade_root3.Remove();
             }
 
 
@@ -346,7 +340,7 @@ namespace PreviewDemo
             // 
             // treeView1
             // 
-            this.treeView1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.treeView1.Font = new System.Drawing.Font("微软雅黑", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.treeView1.Location = new System.Drawing.Point(12, 12);
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(234, 652);
@@ -462,7 +456,7 @@ namespace PreviewDemo
                 {
                     //鼠标恢复
                     this.Cursor = Cursors.Arrow;
-                    MessageBox.Show("不支持高二设备","错误");
+                    MessageBox.Show("不支持高二设备", "错误");
                 }
                 else
                 {
@@ -470,13 +464,13 @@ namespace PreviewDemo
                     {
                         //鼠标恢复
                         this.Cursor = Cursors.Arrow;
-                        MessageBox.Show("当前正在录像，请先停止","提示");
+                        MessageBox.Show("当前正在录像，请先停止", "提示");
                     }
                     else
                     {
                         Play(selected);
                     }
-                    
+
                 }
                 //Console.WriteLine(selected.Tag);
             }
@@ -498,7 +492,7 @@ namespace PreviewDemo
                 //鼠标恢复
                 this.Cursor = Cursors.Arrow;
                 iLastErr = CHCNetSDK.NET_DVR_GetLastError();
-                str = "错误码 = " + iLastErr+",无法连接到ip："+ DVRIPAddress; //登录失败，输出错误号
+                str = "错误码 = " + iLastErr + ",无法连接到ip：" + DVRIPAddress; //登录失败，输出错误号
                 MessageBox.Show(str);
                 return;
             }
@@ -551,7 +545,7 @@ namespace PreviewDemo
                     //预览成功
                     //3、开启声音
                     //开始语音对讲 Start two-way talk
-                    CHCNetSDK.VOICEDATACALLBACKV30 VoiceData = new CHCNetSDK.VOICEDATACALLBACKV30(VoiceDataCallBack);//预览实时流回调函数
+                    VoiceData = new CHCNetSDK.VOICEDATACALLBACKV30(VoiceDataCallBack);//预览实时流回调函数
 
                     lVoiceComHandle = CHCNetSDK.NET_DVR_StartVoiceCom_V30(m_lUserID, 1, true, VoiceData, IntPtr.Zero);
                     //bNeedCBNoEncData [in]需要回调的语音数据类型：0- 编码后的语音数据，1- 编码前的PCM原始数据
@@ -643,7 +637,7 @@ namespace PreviewDemo
             lpJpegPara.wPicSize = 0xff; //抓图分辨率 Picture size: 2- 4CIF，0xff- Auto(使用当前码流分辨率)，抓图分辨率需要设备支持，更多取值请参考SDK文档
 
             //JPEG抓图 Capture a JPEG picture
-            if (!CHCNetSDK.NET_DVR_CaptureJPEGPicture(m_lUserID, lChannel, ref lpJpegPara, UserDir+sJpegPicFileName))
+            if (!CHCNetSDK.NET_DVR_CaptureJPEGPicture(m_lUserID, lChannel, ref lpJpegPara, UserDir + sJpegPicFileName))
             {
                 iLastErr = CHCNetSDK.NET_DVR_GetLastError();
                 str = "发生错误, error code= " + iLastErr;
@@ -652,7 +646,7 @@ namespace PreviewDemo
             }
             else
             {
-                str = "截图成功，文件名为: " + sJpegPicFileName+"，请打开用户文件夹查看";
+                str = "截图成功，文件名为: " + sJpegPicFileName + "，请打开用户文件夹查看";
                 MessageBox.Show(str);
             }
             return;
@@ -734,7 +728,7 @@ namespace PreviewDemo
         {
             //录像保存路径和文件名 the path and file name to save
             string sVideoFileName;
-            sVideoFileName = UserDir+"录像"+ DateTime.Now.ToUniversalTime().ToString().Replace("/", "-").Replace(":", "-") + ".mp4";
+            sVideoFileName = UserDir + "录像" + DateTime.Now.ToUniversalTime().ToString().Replace("/", "-").Replace(":", "-") + ".mp4";
 
             if (m_bRecord == false)
             {
@@ -775,7 +769,7 @@ namespace PreviewDemo
                     m_bRecord = false;
                     Record record = new Record();
                     record.Show();
-                    t.Enabled =false;
+                    t.Enabled = false;
                     label1.Visible = false;
                 }
             }
@@ -789,7 +783,7 @@ namespace PreviewDemo
 
         private void userFolder_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(Application.StartupPath+UserDir);
+            System.Diagnostics.Process.Start(Application.StartupPath + UserDir);
         }
 
         private void about_Click(object sender, EventArgs e)
