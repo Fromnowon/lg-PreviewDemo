@@ -492,7 +492,7 @@ namespace PreviewDemo
                 //鼠标恢复
                 this.Cursor = Cursors.Arrow;
                 iLastErr = CHCNetSDK.NET_DVR_GetLastError();
-                str = "错误码 = " + iLastErr + ",无法连接到ip：" + DVRIPAddress; //登录失败，输出错误号
+                str = "错误码 = " + iLastErr + ",无法连接到ip：" + DVRIPAddress+"。\n原因可能为：录播摄像头断电或网络线路故障"; //登录失败，输出错误号
                 MessageBox.Show(str);
                 return;
             }
@@ -553,7 +553,7 @@ namespace PreviewDemo
                     if (lVoiceComHandle < 0)
                     {
                         iLastErr = CHCNetSDK.NET_DVR_GetLastError();
-                        str = "声音开启错误, 进入静音模式";
+                        str = "声音开启错误, 进入静音模式。\n此为电脑系统环境问题，无法修复";
                         MessageBox.Show(str);
                     }
                     m_bTalk = true;
